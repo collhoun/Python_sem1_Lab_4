@@ -127,8 +127,8 @@ class BookCollection:
 class IndexDict:
     def __init__(self) -> None:
         self._isbns: dict[str, Book] = {}
-        self._authors: dict[str, list[Book]] = {}
-        self._years: dict[int, list[Book]] = {}
+        self._authors: dict[str, BookCollection] = {}
+        self._years: dict[int, BookCollection] = {}
 
     def add_to_indexes(self, book: Book) -> None:
         """добавляет книжку в индексы
@@ -139,12 +139,12 @@ class IndexDict:
         self._isbns[book.isbn] = book
 
         if book.author not in self._authors:
-            self._authors[book.author] = []
-        self._authors[book.author].append(book)
+            self._authors[book.author] = BookCollection()
+        self._authors[book.author].add_book(book)
 
         if book.year not in self._years:
-            self._years[book.year] = []
-        self._years[book.year].append(book)
+            self._years[book.year] = BookCollection()
+        self._years[book.year].add_book(book)
 
     def remove_from_indexes(self, book: Book) -> None:
         """удаление книги из индексов
@@ -156,12 +156,12 @@ class IndexDict:
             del self._isbns[book.isbn]
 
         if book.author in self._authors:
-            self._authors[book.author].remove(book)
+            self._authors[book.author].remove_book(book)
             if not self._authors[book.author]:
                 del self._authors[book.author]
 
         if book.year in self._years:
-            self._years[book.year].remove(book)
+            self._years[book.year].remove_book(book)
             if not self._years[book.year]:
                 del self._years[book.year]
 
@@ -246,7 +246,7 @@ class Library:
         else:
             raise ValueError(f"Невозжно удалить несуществующую книгу {book}")
 
-    def search_by_criteria(self, criteria_key: str, criteria_value: str) -> Book | list[Book] | None:
+    def search_by_criteria(self, criteria_key: str, criteria_value: str) -> Book | BookCollection | None:
         """поиск книги по заданным критериям
 
         Args:
