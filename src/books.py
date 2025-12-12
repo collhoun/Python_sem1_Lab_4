@@ -17,9 +17,31 @@ class Book:
 
 
 class ElectronicBook(Book):
-    def __init__(self, title: str, author: str, year: int, genre: str, isbn: str, memory_weight: float) -> None:
+    def __init__(self, title: str, author: str, year: int, genre: str, isbn: str, memory_weight: float | int) -> None:
         super().__init__(title, author, year, genre, isbn)
-        self.memory_weight: float = memory_weight
+        self.memory_weight: float | int = self.validate_memory(memory_weight)
+
+    @staticmethod
+    def validate_memory(memory: float | int) -> float | int:
+        """метод для валидации значения обьема памяти книги
+
+        Args:
+            memory (float | int): обьем памяти
+
+        Raises:
+            TypeError: тип данных не float или int
+            ValueError: значение обьема памяти меньше нуля
+
+        Returns:
+            float | int: обьем памяти
+        """
+        if not isinstance(memory, (float, int)):
+            raise TypeError(
+                f"Тип значения memory должен быть float или int, а не {type(memory)}")
+        if memory <= 0:
+            raise ValueError(
+                "Обьем занимаемой памяти не должен быть меньше нуля")
+        return memory
 
     def __str__(self) -> str:
         return (f"ElectronicBook(title='{self.title}', author='{self.author}', "
