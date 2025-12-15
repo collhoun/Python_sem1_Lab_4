@@ -8,6 +8,15 @@ class Book:
         self.genre: str = genre
         self.isbn: str = isbn
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Book):
+            return False
+        return (self.title == value.title and
+                self.author == value.author and
+                self.year == value.year and
+                self.genre == value.genre and
+                self.isbn == value.isbn)
+
     def __str__(self) -> str:
         return (f"Book(title='{self.title}', author='{self.author}', "
                 f"year={self.year}, genre='{self.genre}', isbn='{self.isbn}')")
@@ -140,7 +149,10 @@ class BookCollection:
         """
         if not isinstance(other, BookCollection):
             return False
-        return self._items == other._items
+        if len(self._items) != len(other._items):
+            return False
+        return (sorted(self._items, key=lambda book: book.isbn)
+                == sorted(other._items, key=lambda book: book.isbn))
 
     def __str__(self) -> str:
         return f'{self._items}'
@@ -254,7 +266,8 @@ class Library:
         self.index_dict.add_to_indexes(book)
 
     def remove_book(self, book: Book) -> None:
-        """удаляет книгу из индексов
+        """
+        удаляет книгу из индексов
 
         Args:
             book (Book): книга для удаления
@@ -314,3 +327,18 @@ class Library:
             BookCollection: коллекция книг в библиотеке
         """
         return self.book_collection
+
+
+book1 = Book("1984", "George Orwell", 1949, "Dystopian", "1234567890")
+book2 = Book("1984", "George Orwell", 1949, "Dystopian", "1234567890")
+book3 = Book("Brave New World", "Aldous Huxley",
+             1932, "Science Fiction", "0987654321")
+book4 = Book("Brave New World", "Aldous Huxley",
+             1932, "Science Fiction", "0987654321")
+book_collection1 = BookCollection()
+book_collection2 = BookCollection()
+book_collection1.add_book(book1)
+book_collection1.add_book(book3)
+book_collection2.add_book(book4)
+book_collection2.add_book(book2)
+print(book_collection2 == book_collection1)

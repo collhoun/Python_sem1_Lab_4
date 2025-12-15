@@ -5,7 +5,7 @@ from src.constants import BOOKS_OBJECTS, POSSIBLE_EVENTS, EVENT_WEIGHTS
 
 
 def run_simulation(steps: int = 20, seed: int | None = None) -> None:
-    """_summary_
+    """функция запуска симуляции работы библиотеки
 
     Args:
         steps (int, optional): количество шагов в симуляции. Defaults to 20.
